@@ -24,7 +24,7 @@ ground.end_fill()
 
 rocket = turtle.Turtle()
 rocket.shape("triangle")  
-rocket.color("blue")
+rocket.color("white")
 rocket.penup()
 rocket.setheading(90)
 
@@ -52,3 +52,4 @@ while True:
     time.sleep(0.1)
 
 wn.mainloop()
+
