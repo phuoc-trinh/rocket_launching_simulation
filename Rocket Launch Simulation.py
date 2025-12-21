@@ -4,6 +4,7 @@ import time
 wn = turtle.Screen()
 wn.bgcolor("black")
 wn.setup(width=600, height=600)
+wn.tracer(0)
 
 ground = turtle.Turtle()
 ground.hideturtle()
@@ -28,6 +29,12 @@ rocket.color("blue")
 rocket.penup()
 rocket.setheading(90)
 
+hud = turtle.Turtle()
+hud.hideturtle()
+hud.penup()
+hud.color("white")
+hud.goto(-280, 230)
+
 height = 0                 
 speed = 100                
 gravity = -9.8
@@ -48,11 +55,21 @@ while True:
     if height <= 0:
         height = 0
         rocket.goto(0, height * pixel_per_meter)
-        print(f"Time: {t:.1f}, Speed: {speed:.2f}, Height: {height:.2f}")
+        hud.clear()
+        hud.write(
+        f"Time: {t:.1f} s\nSpeed: {speed:.2f} m/s\nHeight: {height:.2f} m",
+        font=("Arial", 14, "bold")  
+        )
+        wn.update()
         break
 
     rocket.goto(0, height * pixel_per_meter)
-    print(f"Time: {t:.1f}, Speed: {speed:.2f}, Height: {height:.2f}")
+    hud.clear()
+    hud.write(
+    f"Time: {t:.1f} s\nSpeed: {speed:.2f} m/s\nHeight: {height:.2f} m",
+    font=("Arial", 14, "bold")  
+    )
+    wn.update()
     time.sleep(0.02)
 
 wn.mainloop()
