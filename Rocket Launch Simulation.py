@@ -8,7 +8,7 @@ wn.setup(width=600, height=600)
 ground = turtle.Turtle()
 ground.hideturtle()
 ground.penup()
-ground.goto(-300, -9)  
+ground.goto(-300, -8)  
 ground.pendown()
 ground.color("green")
 ground.begin_fill()
@@ -29,28 +29,30 @@ rocket.penup()
 rocket.setheading(90)
 
 height = 0                 
-speed = 50                 
-gravity = -6
-time_step = 0.2
+speed = 100                
+gravity = -9.8
+time_step = 0.02
 t = 0
+pixel_per_meter = 5
+mass = 5
 
-rocket.goto(0, height)
+rocket.goto(0, height * pixel_per_meter)
 
 while True:
-    speed = speed + gravity * time_step
+    drag = -0.015 * speed * abs(speed)
+    acceleration = gravity + drag / mass
+    speed = speed + acceleration * time_step
     height = height + speed * time_step
-    t = t + time_step
+    t += time_step
 
     if height <= 0:
         height = 0
-        rocket.goto(0, height)
-        print(f"Time: {t:.1f}, Speed: {speed:.1f}, Height: {height:.1f}")
+        rocket.goto(0, height * pixel_per_meter)
+        print(f"Time: {t:.1f}, Speed: {speed:.2f}, Height: {height:.2f}")
         break
 
-    rocket.goto(0, height)
-    print(f"Time: {t:.1f}, Speed: {speed:.1f}, Height: {height:.1f}")
-    time.sleep(0.1)
+    rocket.goto(0, height * pixel_per_meter)
+    print(f"Time: {t:.1f}, Speed: {speed:.2f}, Height: {height:.2f}")
+    time.sleep(0.02)
 
 wn.mainloop()
-
-
