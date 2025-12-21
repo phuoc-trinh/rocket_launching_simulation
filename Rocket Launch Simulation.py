@@ -40,7 +40,7 @@ speed = 100
 gravity = -9.8
 time_step = 0.02
 t = 0
-pixel_per_meter = 0.4
+pixel_per_meter = 1
 mass = 5
 fuel = 100
 fuel_burn = 1.2
@@ -81,4 +81,5 @@ while True:
     time.sleep(0.02)
 
 wn.mainloop()
+
 
