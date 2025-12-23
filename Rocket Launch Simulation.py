@@ -9,23 +9,23 @@ wn.tracer(0)
 ground = turtle.Turtle()
 ground.hideturtle()
 ground.penup()
-ground.goto(-300, -8)  
+ground.goto(-300, -8)
 ground.pendown()
 ground.color("green")
 ground.begin_fill()
-ground.setheading(270) 
-ground.forward(300)       
-ground.setheading(0)     
-ground.forward(600)       
-ground.setheading(90)    
-ground.forward(300)      
-ground.setheading(180)   
-ground.forward(600)      
+ground.setheading(270)
+ground.forward(300)
+ground.setheading(0)
+ground.forward(600)
+ground.setheading(90)
+ground.forward(300)
+ground.setheading(180)
+ground.forward(600)
 ground.end_fill()
 
 rocket = turtle.Turtle()
-rocket.shape("triangle")  
-rocket.color("blue")
+rocket.shape("triangle")
+rocket.color("#C8C8C8")
 rocket.penup()
 rocket.setheading(90)
 
@@ -33,10 +33,32 @@ hud = turtle.Turtle()
 hud.hideturtle()
 hud.penup()
 hud.color("white")
-hud.goto(-290, 180)
+hud.goto(-290, 200)
 
-height = 0                 
-speed = 100             
+c = turtle.Turtle()
+c.hideturtle()
+c.penup()
+c.color("white")
+c.goto(0,-250)
+
+arc = turtle.Turtle()
+arc.hideturtle()
+arc.color("dim gray")
+arc.fillcolor("dim gray")
+arc.pensize(5)
+arc.penup()
+arc.goto(130, -300)
+arc.setheading(90)
+arc.pendown()
+arc.begin_fill()
+arc.circle(130, 180)
+arc.forward(260)
+arc.end_fill()
+
+wn.update()
+
+height = 0
+speed = 0
 gravity = -9.8
 time_step = 0.02
 t = 0
@@ -44,33 +66,78 @@ pixel_per_meter = 1
 mass = 5
 fuel = 100
 fuel_burn = 1.2
-max_thrust = 15
+max_thrust = 16
 
 rocket.goto(0, height * pixel_per_meter)
 
 def update_hud():
     hud.clear()
     hud.write(
-        f"Time: {t:.1f} s\n"
-        f"Speed: {speed:.2f} m/s\n"
-        f"Height: {height:.2f} m\n"
-        f"Acceleration: {acceleration:.2f} m/s²\n"
-        f"Fuel: {fuel:.2f}%",
-        font = ("Arial", 14, "bold")
-    )   
+        f"Speed: {speed:7.2f} m/s\n"
+        f"Height: {height:7.2f} m\n"
+        f"Acceleration: {acceleration:6.2f} m/s²\n"
+        f"Fuel: {fuel:7.2f}%",
+        font=("Arial", 14, "bold")
+    )
+
+countdown = 1 * 60
+while countdown > 0:
+    mins, secs = divmod(int(countdown),60)
+    c.clear()
+    c.write(
+        f"T-{mins:02d}:{secs:02d}",
+        align="center",
+        font=("Courier",24,"bold")
+    )
+    wn.update()
+    time.sleep(0.02)
+    countdown -= 0.02
+
+c.clear()
+
+flight_time = 0
 
 while True:
     drag = -0.014 * speed * abs(speed)
+
     thrust = max_thrust * (fuel / 100)
+
+    if height < 250 and speed < 0:
+        desired_speed = -1          
+        error = desired_speed - speed
+        thrust += error * 0.6        
+        if thrust > max_thrust:
+            thrust = max_thrust
+
     acceleration = gravity + thrust + drag / mass
     speed = speed + acceleration * time_step
     height = height + speed * time_step
     t += time_step
-    fuel = max(0, fuel - fuel_burn * time_step)
+    fuel_use = (thrust / max_thrust) * fuel_burn * time_step
+    fuel = max(0, fuel - fuel_use)
+
+
+    flight_time += time_step
+    mins, secs = divmod(int(flight_time), 60)
+
+    c.clear()
+    c.write(
+        f"T+{mins:02d}:{secs:02d}",
+        align="center",
+        font=("Courier", 24, "bold")
+    )
 
     if height <= 0:
         height = 0
+        speed = 0
+        acceleration = 0
         rocket.goto(0, height * pixel_per_meter)
+        c.clear()
+        c.write(
+            "LANDING SUCCESS",
+            align="center",
+            font=("Arial", 15, "bold")
+        )
         update_hud()
         wn.update()
         break
@@ -81,5 +148,3 @@ while True:
     time.sleep(0.02)
 
 wn.mainloop()
-
-
