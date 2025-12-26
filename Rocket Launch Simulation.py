@@ -1,5 +1,6 @@
 import turtle
 import time
+import math
 
 wn = turtle.Screen()
 wn.bgcolor("black")
@@ -61,10 +62,15 @@ height = 0
 speed = 0
 gravity = -9.8
 pixel_per_meter = 1
-mass = 5
 fuel = 100
 fuel_burn = 1.2
 max_thrust = 20
+
+dry_mass = 4.0
+fuel_mass_full = 1.0
+earth_radius = 6371000
+rho0 = 1.225
+drag_k = 0.014
 
 rocket.goto(0, height * pixel_per_meter)
 
@@ -112,7 +118,12 @@ while True:
     if dt > 0.1:
         dt = 0.1
 
-    drag = -0.014 * speed * abs(speed)
+    fuel_mass = (fuel / 100) * fuel_mass_full
+    mass = dry_mass + fuel_mass
+
+    g = -9.8 * (earth_radius / (earth_radius + height)) **2
+    density = rho0 * math.exp(-height / 8000)
+    drag = -drag_k * density * speed * abs(speed)
 
     thrust = max_thrust * (fuel / 100)
 
@@ -123,7 +134,7 @@ while True:
         if thrust > max_thrust:
             thrust = max_thrust
 
-    acceleration = gravity + thrust + drag / mass
+    acceleration = g + thrust + drag / mass
 
     speed += acceleration * dt
     height += speed * dt
